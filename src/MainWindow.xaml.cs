@@ -56,7 +56,7 @@ namespace ChatApp
             }
         }
 
-        private void RegistrationFromShowEvent(object sender, RoutedEventArgs e)
+        private void RegistrationFormShowEvent(object sender, RoutedEventArgs e)
         {
             RegisterWindow registerWindow = new RegisterWindow();
             registerWindow.Show();
