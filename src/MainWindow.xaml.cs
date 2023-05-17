@@ -13,24 +13,9 @@ namespace ChatApp
     {
         private LoginService loginService = new LoginService();
 
-        private void Connect()
-        {
-            try
-            {
-                ConnectionTester.Test();
-            }
-            catch (RedisConnectionException)
-            {
-                MessageBox.Show("Can not connect to the server! Restart the application", "Server error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Application.Current.Shutdown();
-                
-            }
-        }
-
         public MainWindow()
         {
             InitializeComponent();
-            Connect();
         }
 
         private void LoginEvent(object sender, RoutedEventArgs e)

@@ -14,14 +14,8 @@ namespace ChatApp.Util
         {
             if (message.MessageType != MessageType.IMAGE)
             {
-                Application.Current.Dispatcher.Invoke(delegate
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Border border = new()
-                    {
-                        BorderThickness = new Thickness(1),
-                        BorderBrush = headlineType == MessageHeadlineType.DEFAULT ? Brushes.Black : headlineType == MessageHeadlineType.INFO ? Brushes.Red : Brushes.Yellow
-                    };
-
                     TextBlock msgBlock = new()
                     {
                         Width = 400,
@@ -34,10 +28,15 @@ namespace ChatApp.Util
                     if (headlineType == MessageHeadlineType.INFO && message.MessageType == MessageType.LOGIN) msgBlock.Inlines.Add(new Bold(new Run("User " + message.Sender + " logged in (" + timeStamp + ")")));
                     if (headlineType == MessageHeadlineType.INFO && message.MessageType == MessageType.LOGOUT) msgBlock.Inlines.Add(new Bold(new Run("User " + message.Sender + " logged out (" + timeStamp + ")")));
                     if (headlineType == MessageHeadlineType.INFO && message.MessageType == MessageType.ONLINEUSERS) msgBlock.Inlines.Add(new Bold(new Run("Online users: " + message.Content)));
-                    if (headlineType != MessageHeadlineType.INFO)
+                    if (headlineType != MessageHeadlineType.INFO) msgBlock.Inlines.Add(new Run(message.Content));
+
+                    Border border = new()
                     {
-                        msgBlock.Inlines.Add(new Run(message.Content));
-                    }
+                        BorderThickness = new Thickness(1),
+                        BorderBrush = headlineType == MessageHeadlineType.DEFAULT ? Brushes.Black : headlineType == MessageHeadlineType.INFO ? Brushes.Red : Brushes.Yellow,
+                        Child = msgBlock
+                    };
+
                     border.Child = msgBlock;
 
                     room.Children.Add(border);
@@ -45,14 +44,8 @@ namespace ChatApp.Util
             }
             else
             {
-                Application.Current.Dispatcher.Invoke(delegate
+                Application.Current.Dispatcher.Invoke(() =>
                 {
-                    Border border = new()
-                    {
-                        BorderThickness = new Thickness(1),
-                        BorderBrush = Brushes.Black
-                    };
-
                     TextBlock msgBlock = new()
                     {
                         Width = 400,
@@ -61,7 +54,7 @@ namespace ChatApp.Util
                     msgBlock.Inlines.Add(new Bold(new Run(message.Sender + " (" + timeStamp + "):\n")));
                     byte[] binaryData = Convert.FromBase64String(message.Content);
 
-                    BitmapImage bi = new BitmapImage();
+                    BitmapImage bi = new();
                     bi.BeginInit();
                     bi.StreamSource = new MemoryStream(binaryData);
                     bi.EndInit();
@@ -71,8 +64,15 @@ namespace ChatApp.Util
                         Source = bi,
                         Margin = new Thickness(10, 10, 10, 10)
                     };
+
                     msgBlock.Inlines.Add(img);
-                    border.Child = msgBlock;
+
+                    Border border = new()
+                    {
+                        BorderThickness = new Thickness(1),
+                        BorderBrush = Brushes.Black,
+                        Child = msgBlock
+                    };
 
                     room.Children.Add(border);
                 });
